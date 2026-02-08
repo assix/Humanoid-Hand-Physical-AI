@@ -19,23 +19,58 @@ An AI-powered controller for a **5-DOF Metal Humanoid Robotic Hand**. This proje
 | :---: | :---: | :---: |
 | ![Rock](images/demo_rock.png) | ![Paper](images/demo_paper.png) | ![Scissors](images/demo_scissors.png) |
 
-## 🛠️ Hardware Requirements
-* **Raspberry Pi 5** (Recommended for performance)
-* **PCA9685** 16-Channel PWM Servo Driver
-* **5-DOF Metal Humanoid Hand** (Uses 5x MG90S/A0090 servos)
-* **USB Webcam**
-* **Power Supply:** 5V 2A+ external power for the servos.
+# 🛠️ Hardware & Wiring Guide
 
-### 🔌 Wiring & Pinout
-This project uses a custom finger mapping for the generic metal hand kit. Ensure your servos are plugged into the PCA9685 as follows:
+## 🧰 Materials List
+* **Raspberry Pi 5** (4GB or 8GB recommended for smooth MediaPipe tracking).
+* **5-DOF Metal Humanoid Robotic Hand:**
+    * Left or Right hand model (Metal structure).
+    * **Servos:** 5x **MG90S** (Metal Gear) or **A0090** digital servos.
+    * *Note: These servos require more current than the Pi can provide directly.*
+* **PCA9685 16-Channel PWM Servo Driver:**
+    * Interface: I2C.
+    * Controls up to 16 servos using only 2 pins on the Pi.
+* **External Power Supply (Crucial):**
+    * **5V 2A to 4A Power Adapter** (Barrel jack or USB-C breakout).
+    * *Do NOT power the servos directly from the Raspberry Pi's 5V pin. You will brown out the Pi.*
+* **Jumper Wires:** Female-to-Female for the Pi-to-Driver connection.
+* **USB Webcam:** Any standard 720p/1080p webcam (Logitech C920 used in demo).
 
-| Finger | Servo Channel | Logic |
+---
+
+## 🔌 Wiring Instructions
+
+### 1. Power Supply Wiring (The Most Important Step)
+The servos need their own power source. The PCA9685 driver has a screw terminal block (green) for this purpose.
+* **External 5V (+) ->** Connect to the **V+** screw terminal on the PCA9685.
+* **External GND (-) ->** Connect to the **GND** screw terminal on the PCA9685.
+
+### 2. Raspberry Pi to PCA9685 (I2C Connection)
+Connect the PCA9685 header pins to the Raspberry Pi GPIO header:
+
+| PCA9685 Pin | Raspberry Pi 5 Pin | Function |
 | :--- | :--- | :--- |
-| **Thumb** | Channel 2 | Standard |
-| **Index** | Channel 0 | Standard |
-| **Middle** | Channel 1 | Standard |
-| **Ring** | Channel 3 | **Reversed** |
-| **Pinky** | Channel 4 | **Reversed** |
+| **VCC** | **3.3V** (Pin 1) | Powers the driver chip logic |
+| **GND** | **GND** (Pin 6) | Common Ground |
+| **SCL** | **GPIO 3 / SCL** (Pin 5) | I2C Clock Line |
+| **SDA** | **GPIO 2 / SDA** (Pin 3) | I2C Data Line |
+| **OE** | *Not Connected* | Output Enable (Optional) |
+
+> **⚠️ Warning:** Connect VCC to **3.3V**, not 5V. The Pi's logic level is 3.3V.
+
+### 3. Servo Motor Connections
+Plug your servo cables into the yellow/red/black headers on the PCA9685.
+* **Orientation:** The **Orange/Yellow** wire (Signal) goes to the **Top** (PWM) pin. The **Brown/Black** wire (Ground) goes to the **Bottom** (GND) pin.
+
+| Hand Finger | PCA9685 Channel | Config Note |
+| :--- | :--- | :--- |
+| **Index Finger** | **Channel 0** | Standard Range (4500-9000) |
+| **Middle Finger** | **Channel 1** | Standard Range (4500-7500) |
+| **Thumb** | **Channel 2** | Standard Range |
+| **Ring Finger** | **Channel 3** | **Reversed Logic** (Closed=Low) |
+| **Pinky Finger** | **Channel 4** | **Reversed Logic** (Closed=Low) |
+
+*(Note: Channels 3 and 4 are reversed in software because the servos are physically mounted in the opposite direction on the metal frame.)*
 
 ## 📦 Installation
 
