@@ -1,4 +1,4 @@
-# 🤖 Physical AI: Humanoid Hand RPS
+# 🤖 Physical AI: Humanoid Hand
 
 An interactive **Physical AI** (Embodied AI) project that bridges computer vision and robotic actuation. This system uses a Raspberry Pi 5 to process hand gestures in real-time and physically replicate them on a **5-DOF Metal Humanoid Hand** to play Rock-Paper-Scissors.
 
